@@ -12,6 +12,7 @@
         android:id="@+id/dateSpendingListItemLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         />
 
     <LinearLayout
@@ -23,14 +24,16 @@
             android:id="@+id/spentSpendingListItemLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="10"
+
             />
         <TextView
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
             android:id="@+id/descriptionSpendingListItemLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLength="140"
+            android:maxLines="2"
+            android:ellipsize="end"
+
             />
 
 

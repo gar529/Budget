@@ -28,6 +28,7 @@
     <string name="title_rename_category">Rename Category</string>
     <string name="hint_rename_category">Enter New Category Name</string>
     <string name="remove">REMOVE</string>
+    <string name="menu_remove">Remove</string>
     <string name="checkbox_rename_category">Apply Change To All Categories</string>
 
 

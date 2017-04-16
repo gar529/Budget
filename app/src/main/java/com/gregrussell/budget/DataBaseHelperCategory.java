@@ -256,6 +256,7 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
             categoryObj.setCategoryName(cursor.getString(Constants.CATEGORIES_NAME_POSITION));
             categoryObj.setDefaultCategory(cursor.getInt(Constants.CATEGORIES_DEFAULT_POSITION));
         }
+        cursor.close();
 
         return categoryObj;
 
@@ -1346,6 +1347,17 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
 
     }
 
+    public void removeCategoryFromSpendingTable(int categoryID){
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(Spending.SPENDING_TABLE_NAME,Spending.SPENDING_CATEGORY_ID + " = " + categoryID,null);
+    }
+
+    public void removeCategoryFromExpenseTable(int categoryID){
+
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(Expenses.EXPENSES_TABLE_NAME,Expenses.EXPENSES_CATEGORY_ID + " = " + categoryID,null);
+    }
 
 
 

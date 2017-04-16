@@ -304,10 +304,10 @@ public class CurrentBudgetFragment extends Fragment {
 
             if(roundTotSpent < roundAllExp){
                 ovUn = "Under";
-                CurrentBudgetFragment.containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListGreen));
-                CurrentBudgetFragment.topBarColor = getResources().getColor(R.color.colorListGreen);
+                containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListGreen));
+                topBarColor = getResources().getColor(R.color.colorListGreen);
                 if(SwipeViews.swipePosition == 0) {
-                    SwipeViews.topBar.setBackgroundColor(CurrentBudgetFragment.topBarColor);
+                    SwipeViews.topBar.setBackgroundColor(topBarColor);
                     if(Build.VERSION.SDK_INT >= 21){
                         Window window = ((Activity)context).getWindow();
 
@@ -327,10 +327,10 @@ public class CurrentBudgetFragment extends Fragment {
                 }
             }else if(roundTotSpent == roundAllExp){
                 ovUn = "Even";
-                CurrentBudgetFragment.containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListNeutral));
-                CurrentBudgetFragment.topBarColor = getResources().getColor(R.color.colorListNeutral);
+                containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListNeutral));
+                topBarColor = getResources().getColor(R.color.colorListNeutral);
                 if(SwipeViews.swipePosition == 0) {
-                    SwipeViews.topBar.setBackgroundColor(CurrentBudgetFragment.topBarColor);
+                    SwipeViews.topBar.setBackgroundColor(topBarColor);
                     if(Build.VERSION.SDK_INT >= 21){
                         Window window = ((Activity)context).getWindow();
 
@@ -350,10 +350,10 @@ public class CurrentBudgetFragment extends Fragment {
                 }
             }else {
                 ovUn = "Over";
-                CurrentBudgetFragment.containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListRed));
-                CurrentBudgetFragment.topBarColor = getResources().getColor(R.color.colorListRed);
+                containerLayout.setBackgroundColor(getResources().getColor(R.color.colorListRed));
+                topBarColor = getResources().getColor(R.color.colorListRed);
                 if(SwipeViews.swipePosition == 0) {
-                    SwipeViews.topBar.setBackgroundColor(CurrentBudgetFragment.topBarColor);
+                    SwipeViews.topBar.setBackgroundColor(topBarColor);
                     Log.d("changeColor", "change");
                     if(Build.VERSION.SDK_INT >= 21){
 
@@ -887,8 +887,6 @@ public class CurrentBudgetFragment extends Fragment {
             AsyncLoadList loadList = new AsyncLoadList();
             loadList.execute();
         }
-
-
     }
 
 
@@ -916,6 +914,7 @@ public class CurrentBudgetFragment extends Fragment {
                 Log.d("longClickMenuClick", "cbf delete position " + longClickPos);
 
                 //method to delte category
+                removeCategoryDialog();
 
                 return true;
             default:
@@ -928,7 +927,6 @@ public class CurrentBudgetFragment extends Fragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View renameCategoryLayout = inflater.inflate(R.layout.rename_category_dialog,null);
         final EditText renameCategoryEdit = (EditText)renameCategoryLayout.findViewById(R.id.editTextRenameCategoryDialog);
-        final CheckBox renameCategoryCheckBox = (CheckBox)renameCategoryLayout.findViewById(R.id.checkboxRenameCategoryDialog);
 
         //create a dialog box to add new category
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
@@ -958,12 +956,9 @@ public class CurrentBudgetFragment extends Fragment {
 
                                     //get category that was long clicked
                                     longClickedBudget = listData.getCategoryIDList().get(longClickPos);
-
                                     CategoryObj category = new CategoryObj();
-
                                     category.setCategoryName(String.valueOf(renameCategoryEdit.getText()).trim());
                                     category.setDefaultCategory(0);
-
                                     checkCategoryTask.execute(category);
                                 }
                             }
@@ -981,8 +976,31 @@ public class CurrentBudgetFragment extends Fragment {
 
         // create alert dialog
         AlertDialog alertDialog = alertDialogBuilder.create();
-
         alertDialog.show();
+    }
+
+    private void removeCategoryDialog(){
+
+        new AlertDialog.Builder(context)
+                .setTitle("Remove Category")
+                .setMessage("Are you sure you want to remove this category?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        //get category that was long clicked
+                        longClickedBudget = listData.getCategoryIDList().get(longClickPos);
+                        AsyncRemoveCategory removeCategoryTask = new AsyncRemoveCategory();
+                        removeCategoryTask.execute(longClickedBudget);
+                    }
+                })
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+
+                })
+                .show();
 
     }
 
@@ -1011,28 +1029,6 @@ public class CurrentBudgetFragment extends Fragment {
                     return 2;
                 }
             }
-            /*if(myDBHelper.checkCategoryName(categoryObj)){
-
-                //proceed
-
-                if(renameApplyToAllBudgets == false){
-
-                    //does not apply to all, therefore create a new category
-                    CategoryObj newCategoryObj = myDBHelper.addCategory(categoryObj);
-
-                    //add new category, get id
-                    //replace old category id with new category id in expenses and spending table
-                    myDBHelper.renameCategoryForSingleBudget(longClickedBudget,currentBudget,newCategoryObj);
-
-
-                }else{
-                    //edit category using id
-                    myDBHelper.renameCategoryForAllBudgets(categoryObj);
-                }
-                return true;
-            }else{
-                return false;
-            }*/
         }
         @Override
         protected void onPostExecute(Integer result){
@@ -1074,30 +1070,6 @@ public class CurrentBudgetFragment extends Fragment {
                         })
                         .show();
             }
-
-            /*if(!result){
-                new AlertDialog.Builder(context)
-                        .setTitle("Invalid Category Name")
-                        .setMessage("The category name entered already exists. Use existing category?")
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-
-                                AsyncRenameCategoryToExisting task = new AsyncRenameCategoryToExisting();
-                                task.execute(renameToExistingCategory(categoryName));
-                            }
-                        })
-                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                renameCategoryDialog();
-                            }
-                        })
-                        .show();
-            }else {
-                AsyncLoadList loadList = new AsyncLoadList();
-                loadList.execute();
-            }*/
-
-
         }
 
     }
@@ -1129,6 +1101,29 @@ public class CurrentBudgetFragment extends Fragment {
 
             AsyncLoadList loadList = new AsyncLoadList();
             loadList.execute();
+        }
+    }
+
+    private class AsyncRemoveCategory extends AsyncTask<Integer, Void, Boolean>{
+
+        @Override
+        protected Boolean doInBackground(Integer... categoryID){
+
+            CategoryObj category = myDBHelper.getCategory(categoryID[0]);
+            myDBHelper.removeCategoryFromExpenseTable(categoryID[0]);
+            myDBHelper.removeCategoryFromSpendingTable(categoryID[0]);
+            myDBHelper.checkForCategoryUse(categoryID[0]);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result){
+
+            AsyncLoadList loadList = new AsyncLoadList();
+            loadList.execute();
+            AsyncLoadHeader loadHeader = new AsyncLoadHeader();
+            loadHeader.execute();
         }
     }
 
