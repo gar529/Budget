@@ -417,7 +417,7 @@ public class DisplayCategory extends Activity{
 
         // set dialog message
         alertDialogBuilder
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -541,7 +541,7 @@ public class DisplayCategory extends Activity{
 
         // set dialog message
         alertDialogBuilder
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -794,7 +794,7 @@ public class DisplayCategory extends Activity{
 
         // set dialog message
         alertDialogBuilder
-                .setCancelable(false)
+                .setCancelable(true)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -846,7 +846,7 @@ public class DisplayCategory extends Activity{
                             public void onClick(DialogInterface dialog, int which) {
 
                                 new AlertDialog.Builder(DisplayCategory.this)
-                                        .setCancelable(false)
+                                        .setCancelable(true)
                                         .setTitle("Delete Entry?")
                                         .setMessage("Are you sure you want to delete this entry?")
                                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
