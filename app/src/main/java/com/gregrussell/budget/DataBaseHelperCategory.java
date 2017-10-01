@@ -1132,12 +1132,14 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
         List<BudgetObj> budgetObjList = getAllBudgets();
         List<Double> budgetExpenseList = listOfBudgetExpenses(budgetObjList);
         List<Double> budgetSpendingList = listOfBudgetSpending(budgetObjList);
+        List<Double> budgetEarningList = listOfBudgetEarning(budgetObjList);
 
-        if(budgetObjList.size() == budgetExpenseList.size() && budgetObjList.size() == budgetSpendingList.size()){
+        if(budgetObjList.size() == budgetExpenseList.size() && budgetObjList.size() == budgetSpendingList.size()
+                && budgetObjList.size() == budgetEarningList.size()){
             for(int i =0; i<budgetObjList.size();i++){
                 BudgetListItemObj budgetListItemObj = new BudgetListItemObj(budgetObjList.get(i).getID(),
                         budgetObjList.get(i).getBudgetName(),budgetExpenseList.get(i),
-                        budgetSpendingList.get(i));
+                        budgetSpendingList.get(i), budgetEarningList.get(i));
                 budgetListItemObjList.add(budgetListItemObj);
             }
 

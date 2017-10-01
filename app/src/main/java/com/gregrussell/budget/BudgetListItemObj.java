@@ -12,6 +12,7 @@ public class BudgetListItemObj {
     String budgetName;
     double expenses;
     double spent;
+    double earned;
 
     public BudgetListItemObj() {
 
@@ -23,6 +24,17 @@ public class BudgetListItemObj {
         this.budgetName = budgetName;
         this.expenses = expenses;
         this.spent = spent;
+
+
+    }
+
+    public BudgetListItemObj(int budgetID, String budgetName, double expenses, double spent, double earned) {
+
+        this.budgetID = budgetID;
+        this.budgetName = budgetName;
+        this.expenses = expenses;
+        this.spent = spent;
+        this.earned = earned;
 
 
     }
@@ -58,6 +70,14 @@ public class BudgetListItemObj {
 
     public void setSpent(double spent) {
         this.spent = spent;
+    }
+
+    public double getEarned(){
+        return this.earned;
+    }
+
+    public void setEarned(double earned){
+        this.earned = earned;
     }
 
 
