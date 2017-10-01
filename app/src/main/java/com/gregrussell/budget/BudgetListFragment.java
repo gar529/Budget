@@ -196,7 +196,7 @@ public class BudgetListFragment extends Fragment{
         double diff;
         double allExp;
         double totSpent;
-
+        double earn;
 
 
 
@@ -216,7 +216,19 @@ public class BudgetListFragment extends Fragment{
 
             String ovUn;
 
-
+            Log.d("swapBudgetList","onpost");
+            //decide whether to display
+            switch(CurrentBudgetFragment.swapHeader){
+                case 0:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+                case 1:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.earned));
+                    break;
+                default:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+            }
 
             //round because double doesn't know how to math
             double roundTotSpent = Math.round(totSpent *100.0)/100.0;
@@ -279,6 +291,8 @@ public class BudgetListFragment extends Fragment{
 
             ListDataObj listData = myDBHelper.createListData(CurrentBudgetFragment.currentBudget);
 
+            //get earnings
+            earn = myDBHelper.getEarnedAmount(CurrentBudgetFragment.currentBudget);
 
             //Debug logs to check that all data is in the list
 
@@ -303,9 +317,22 @@ public class BudgetListFragment extends Fragment{
             CurrentBudgetFragment.budgetName = listData.getBudgetName();
             allExp = listData.getAllExpenses();
             totSpent = listData.getTotalSpent();
+
+
+            //use swapHeader value to determine which values to load
+            switch(CurrentBudgetFragment.swapHeader){
+                case 0:
+                    allExp = listData.getAllExpenses();
+                    break;
+                case 1:
+                    allExp = earn;
+                    break;
+                default:
+                    allExp = listData.getAllExpenses();
+                    break;
+            }
             Log.d("populateheader", "listdata spent is " + listData.getTotalSpent());
             diff = totSpent - allExp;
-
 
 
 

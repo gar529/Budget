@@ -3,9 +3,11 @@ package com.gregrussell.budget;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -46,6 +48,18 @@ public class AddBudget extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean("FIRST_TIME_ADD_BUDGET", false);
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean("FIRST_TIME_ADD_BUDGET", Boolean.TRUE);
+            edit.commit();
+            Log.d("First Time", "Add budget for first time");
+        }else{
+            Log.d("First Time", "Add budget already");
+        }
+
         setContentView(R.layout.add_new_budget);
         listViewCategoriesAdd = (ListView) findViewById(R.id.listViewAddBudget);
         addCategoryButton = (ImageView) findViewById(R.id.addCategoryAddNewBudget);

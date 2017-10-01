@@ -7,12 +7,14 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
@@ -73,6 +75,17 @@ public class SwipeViews extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean("FIRST_TIME_APP_START", false);
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean("FIRST_TIME_APP_START", Boolean.TRUE);
+            edit.commit();
+            Log.d("First Time", "Main Screen For First Time");
+        }else{
+            Log.d("First Time", "Main Screen already");
+        }
 
         setContentView(R.layout.swipe_views_layout);
 
@@ -463,7 +476,7 @@ public class SwipeViews extends Activity {
         double diff;
         double allExp;
         double totSpent;
-
+        double earn;
 
 
 
@@ -483,6 +496,19 @@ public class SwipeViews extends Activity {
 
             String ovUn;
 
+            Log.d("swapSwipe","onpost");
+            //decide whether to display
+            switch(CurrentBudgetFragment.swapHeader){
+                case 0:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+                case 1:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.earned));
+                    break;
+                default:
+                    CurrentBudgetFragment.projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+            }
 
 
             //round because double doesn't know how to math
@@ -589,6 +615,8 @@ public class SwipeViews extends Activity {
             //headerLoadingPanel.setVisibility(View.INVISIBLE);
 
 
+
+
         }
 
 
@@ -605,6 +633,9 @@ public class SwipeViews extends Activity {
 
 
             ListDataObj listData = myDBHelper.createListData(CurrentBudgetFragment.currentBudget);
+
+            //get earnings
+            earn = myDBHelper.getEarnedAmount(CurrentBudgetFragment.currentBudget);
 
 
             //Debug logs to check that all data is in the list
@@ -628,8 +659,21 @@ public class SwipeViews extends Activity {
 
             //pass data from list to objects
             CurrentBudgetFragment.budgetName = listData.getBudgetName();
-            allExp = listData.getAllExpenses();
+            //allExp = listData.getAllExpenses();
             totSpent = listData.getTotalSpent();
+
+            //use swapHeader value to determine which values to load
+            switch(CurrentBudgetFragment.swapHeader){
+                case 0:
+                    allExp = listData.getAllExpenses();
+                    break;
+                case 1:
+                    allExp = earn;
+                    break;
+                default:
+                    allExp = listData.getAllExpenses();
+                    break;
+            }
             Log.d("populateheader", "listdata spent is " + listData.getTotalSpent());
             diff = totSpent - allExp;
 

@@ -3,12 +3,14 @@ package com.gregrussell.budget;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
@@ -64,7 +66,7 @@ public class ListViewAdapterAllBudgets extends BaseAdapter {
         Log.d("listViewAdapterAll", "List view adapter getView method");
         View currentView = convertView;
         if(currentView == null){
-            currentView = inflater.inflate(R.layout.list_item_layout,parent,false);
+            currentView = inflater.inflate(R.layout.list_item_layout_all_budgets,parent,false);
         }
         TextView difference = (TextView)currentView.findViewById(R.id.differenceItemLayout);
         TextView overUnder = (TextView)currentView.findViewById(R.id.overUnderItemLayout);
@@ -72,15 +74,29 @@ public class ListViewAdapterAllBudgets extends BaseAdapter {
         TextView expenses = (TextView)currentView.findViewById(R.id.projectedValueItemLayout);
         TextView spent = (TextView)currentView.findViewById(R.id.spentValueItemLayout);
         TextView spentOrEarned = (TextView)currentView.findViewById(R.id.spentItemLayout);
-        TextView projected = (TextView)currentView.findViewById(R.id.projectedItemLayout);
+        final TextView projected = (TextView)currentView.findViewById(R.id.projectedItemLayout);
+        ImageView swap = (ImageView)currentView.findViewById(R.id.swapProjectedWithEarned);
 
         //make spent text view read "earned" for income field, otherwise read "spent"
+
+
+
+
 
         spentOrEarned.setText(context.getResources().getText(R.string.spent));
         projected.setText(context.getResources().getText(R.string.projected));
 
 
+        swap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(projected.getText().equals(context.getResources().getText(R.string.projected).toString())){
 
+                }else{
+
+                }
+            }
+        });
 
 
 
@@ -88,8 +104,15 @@ public class ListViewAdapterAllBudgets extends BaseAdapter {
         String budName = budgetListItemList.get(position).getBudgetName();
         double exp = budgetListItemList.get(position).getExpenses();
         double totSpent = budgetListItemList.get(position).getSpent();
-        double diff;
-        diff = totSpent - exp;
+
+        //round because double doesn't know how to math
+        totSpent = Math.round(totSpent *100.0)/100.0;
+        exp = Math.round(exp *100.0)/100.0;
+
+
+        double diff = totSpent - exp;
+
+        Log.d("differenceAllBudget", budName + " expenses: " + exp + ", total spent: " + totSpent + ", difference: " + diff);
 
 
         //formatter to convert double under 1000 to currency (only for difference text view)

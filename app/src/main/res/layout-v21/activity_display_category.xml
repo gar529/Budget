@@ -157,7 +157,7 @@
                         android:id="@+id/topLoadingPanelDisplayCategory"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundList"
+                        android:background="@color/colorInvisible"
                         android:gravity="center" >
 
                         <ProgressBar
@@ -184,7 +184,7 @@
                         android:id="@+id/listLoadingPanelDisplayCategory"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundList"
+                        android:background="@color/colorInvisible"
                         android:gravity="center" >
                         <ProgressBar
                             android:id="@+id/listProgressDisplayCategory"

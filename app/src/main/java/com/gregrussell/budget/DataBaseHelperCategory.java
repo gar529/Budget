@@ -735,6 +735,8 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
 
 
         expensesList.add(getAllExpenses(budgetID));
+        //update projected income value to be the total of all expenses (for zero sum budget,
+        //income should match projected expenses
         updateIncome(budgetID,getAllExpenses(budgetID));
 
 
@@ -1203,6 +1205,25 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
             cursor.close();
         }
         return budgetSpendingList;
+    }
+
+    //get total earned for each budget and return as list
+    private List<Double> listOfBudgetEarning(List<BudgetObj> budgetObjList){
+
+        List<Double> budgetEarningList = new ArrayList<Double>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //for loop to move through all budgets
+        for(int i = 0; i < budgetObjList.size(); i++){
+            Cursor cursor = db.rawQuery("SELECT SUM(" + Earning.EARNING_EARNED + ") FROM " +
+                    Earning.EARNING_TABLE_NAME + " WHERE " + Earning.EARNING_BUDGET_ID + " = " +
+                    budgetObjList.get(i).getID(),null);
+            if(cursor.moveToFirst()){
+                budgetEarningList.add(cursor.getDouble(0));
+            }else budgetEarningList.add(0.00);
+            cursor.close();
+        }
+        return budgetEarningList;
     }
 
     public void updateBudgetTimestamp(int budgetID, Timestamp time){

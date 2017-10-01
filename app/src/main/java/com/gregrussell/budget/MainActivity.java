@@ -22,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -53,9 +54,12 @@ public class MainActivity extends Activity {
     TextView overUnder;
     TextView budgetName;
     TextView projectedExpenses;
+    TextView projectedExpensesText;
     TextView spent;
     ListView listView;
     FloatingActionButton addCategoryButton;
+    ImageView swapHeaderButton;
+    int swapHeader = 0;
     public static String BUDGET_NAME;
     List<CategoryObj> unusedCategoryList = new ArrayList<CategoryObj>();
 
@@ -89,9 +93,13 @@ public class MainActivity extends Activity {
         overUnder = (TextView)findViewById(R.id.overUnder);
         budgetName = (TextView)findViewById(R.id.budgetName);
         projectedExpenses = (TextView)findViewById(R.id.projectedValue);
+        projectedExpensesText = (TextView)findViewById(R.id.projected);
         spent = (TextView)findViewById(R.id.spentValue);
         addCategoryButton = (FloatingActionButton)findViewById(R.id.addMainActivity);
         addCategoryButton.setVisibility(View.INVISIBLE);
+        swapHeaderButton = (ImageView)findViewById(R.id.swapHeader);
+        swapHeaderButton.setVisibility(View.GONE);
+
 
         //setting color for header progress bar
         ProgressBar headerProgress = (ProgressBar) findViewById(R.id.headerProgress);
@@ -119,6 +127,29 @@ public class MainActivity extends Activity {
             }
         });
 
+        //onClickListener for headerSwapButton
+        swapHeaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("SwapHeaderButton", "click");
+
+                AsyncLoadHeader loadHeader = new AsyncLoadHeader();
+                switch(swapHeader){
+                    case 0:
+                        swapHeader = 1;
+                        loadHeader.execute();
+                    case 1:
+                        swapHeader = 0;
+                        loadHeader.execute();
+                    default:
+                        swapHeader = 0;
+                        loadHeader.execute();
+
+
+                }
+            }
+        });
 
     }
 
@@ -262,6 +293,7 @@ public class MainActivity extends Activity {
         double diff;
         double allExp;
         double totSpent;
+        double earn;
 
 
         @Override
@@ -278,6 +310,15 @@ public class MainActivity extends Activity {
             //set text from string[] result that is returned by doInBackground
 
             String ovUn;
+
+            switch(swapHeader){
+                case 0:
+                    projectedExpensesText.setText(getString(R.string.projected_expenses));
+                case 1:
+                    projectedExpensesText.setText(getString(R.string.earned));
+                default:
+                    projectedExpensesText.setText(getString(R.string.projected_expenses));
+            }
 
 
 
@@ -306,6 +347,7 @@ public class MainActivity extends Activity {
             difference.setText(result[2]);
             overUnder.setText(ovUn);
 
+            projectedExpenses.setText("test test");
 
 
 
@@ -321,6 +363,9 @@ public class MainActivity extends Activity {
 
             Log.d("listDataObj", "Entered PopulateHeader, current budget is " + CURRENT_BUDGET);
             ListDataObj listData = myDBHelper.createListData(CURRENT_BUDGET);
+
+            //get earnings
+            earn = myDBHelper.getEarnedAmount(CURRENT_BUDGET);
 
 
             //Debug logs to check that all data is in the list
@@ -344,12 +389,27 @@ public class MainActivity extends Activity {
 
             //pass data from list to objects
             BUDGET_NAME = listData.getBudgetName();
-            allExp = listData.getAllExpenses();
+            //allExp = listData.getAllExpenses();
             totSpent = listData.getTotalSpent();
+
+
+
+            //use swapHeader value to determine which values to load
+            switch(swapHeader){
+                case 0:
+                    allExp = listData.getAllExpenses();
+                case 1:
+                    allExp = earn;
+                default:
+                    allExp = listData.getAllExpenses();
+            }
+
             Log.d("populateheader", "listdata spent is " + listData.getTotalSpent());
+
+
+
+
             diff = totSpent - allExp;
-
-
 
 
 

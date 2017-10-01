@@ -32,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
@@ -62,9 +63,12 @@ public class CurrentBudgetFragment extends Fragment {
     public static TextView overUnder;
     public static TextView budgetNameText;
     public static TextView projectedExpenses;
+    public static TextView projectedExpensesText;
     public static TextView spent;
     public static ListView listView;
     public static ListViewAdapter adapter;
+    public static ImageView swapHeaderButton;
+    public static int swapHeader = 0;
     FloatingActionButton addCategoryButton;
     public static String budgetName;
     public static List<CategoryObj> unusedCategoryList = new ArrayList<CategoryObj>();
@@ -119,11 +123,14 @@ public class CurrentBudgetFragment extends Fragment {
         overUnder = (TextView)rootView.findViewById(R.id.overUnder);
         budgetNameText = (TextView)rootView.findViewById(R.id.budgetName);
         projectedExpenses = (TextView)rootView.findViewById(R.id.projectedValue);
+        projectedExpensesText = (TextView)rootView.findViewById(R.id.projected);
         spent = (TextView)rootView.findViewById(R.id.spentValue);
         addCategoryButton = (FloatingActionButton)rootView.findViewById(R.id.addMainActivity);
         addCategoryButton.setVisibility(View.INVISIBLE);
         listLoadingPanel = rootView.findViewById(R.id.listLoadingPanel);
         headerLoadingPanel = rootView.findViewById(R.id.headerLoadingPanel);
+        swapHeaderButton = (ImageView)rootView.findViewById(R.id.swapHeader);
+        swapHeaderButton.setVisibility(View.INVISIBLE);
 
 
         //setting color for header progress bar
@@ -145,6 +152,33 @@ public class CurrentBudgetFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addCategory();
+            }
+        });
+
+        //onClickListener for headerSwapButton
+        swapHeaderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Log.d("SwapHeaderButton", "click. swap header is " + swapHeader );
+
+                AsyncLoadHeader loadHeader = new AsyncLoadHeader();
+                switch(swapHeader){
+                    case 0:
+                        swapHeader = 1;
+                        loadHeader.execute();
+                        break;
+                    case 1:
+                        swapHeader = 0;
+                        loadHeader.execute();
+                        break;
+                    default:
+                        swapHeader = 0;
+                        loadHeader.execute();
+                        break;
+
+
+                }
             }
         });
 
@@ -278,10 +312,13 @@ public class CurrentBudgetFragment extends Fragment {
         double diff;
         double allExp;
         double totSpent;
+        double earn;
+
 
 
         @Override
         protected String[] doInBackground(Void... params) {
+
 
             return populateHeader();
         }
@@ -295,7 +332,18 @@ public class CurrentBudgetFragment extends Fragment {
 
             String ovUn;
 
-
+            //decide whether to display
+            switch(swapHeader){
+                case 0:
+                    projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+                case 1:
+                    projectedExpensesText.setText(getString(R.string.earned));
+                    break;
+                default:
+                    projectedExpensesText.setText(getString(R.string.projected_expenses));
+                    break;
+            }
 
 
             //round because double doesn't know how to math
@@ -397,15 +445,21 @@ public class CurrentBudgetFragment extends Fragment {
             //progress bar is visible by default. Turn invisible once loading is complete
             headerLoadingPanel.setVisibility(View.INVISIBLE);
 
+            //make the swap header button appear
+            swapHeaderButton.setVisibility(View.VISIBLE);
+
 
         }
 
 
         private String[] populateHeader(){
 
+            Log.d("SwapHeaderButton", "made it to do in background");
             Log.d("listDataObj", "Entered PopulateHeader, current budget is " + currentBudget);
             listData = myDBHelper.createListData(currentBudget);
 
+            //get earnings
+            earn = myDBHelper.getEarnedAmount(currentBudget);
 
             //Debug logs to check that all data is in the list
 
@@ -428,8 +482,25 @@ public class CurrentBudgetFragment extends Fragment {
 
             //pass data from list to objects
             budgetName = listData.getBudgetName();
-            allExp = listData.getAllExpenses();
+            //allExp = listData.getAllExpenses();
             totSpent = listData.getTotalSpent();
+
+            //use swapHeader value to determine which values to load
+            switch(swapHeader){
+                case 0:
+                    Log.d("SwapHeaderButton", "case is 0");
+                    allExp = listData.getAllExpenses();
+                    break;
+                case 1:
+                    Log.d("SwapHeaderButton", "case is 1");
+                    allExp = earn;
+                    break;
+                default:
+                    Log.d("SwapHeaderButton", "Case is default");
+                    allExp = listData.getAllExpenses();
+                    break;
+            }
+
             Log.d("populateheader", "listdata spent is " + listData.getTotalSpent());
             diff = totSpent - allExp;
 

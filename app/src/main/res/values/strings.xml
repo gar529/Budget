@@ -30,6 +30,7 @@
     <string name="remove">REMOVE</string>
     <string name="menu_remove">Remove</string>
     <string name="checkbox_rename_category">Apply Change To All Categories</string>
+    <string name="x">X</string>
 
 
 </resources>

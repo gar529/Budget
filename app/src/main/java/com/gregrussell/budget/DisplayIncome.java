@@ -1,14 +1,18 @@
 package com.gregrussell.budget;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.SQLException;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -16,6 +20,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -50,6 +56,10 @@ public class DisplayIncome extends Activity {
     LayoutInflater inflater;
     View topLoadingPanel;
     View listLoadingPanel;
+    View headerContainer;
+    View topBar;
+    TextView difference;
+    TextView overUnder;
 
 
 
@@ -74,6 +84,10 @@ public class DisplayIncome extends Activity {
         FloatingActionButton addButton = (FloatingActionButton)findViewById(R.id.addDisplayIncome);
         topLoadingPanel = findViewById(R.id.topLoadingPanelDisplayIncome);
         listLoadingPanel = findViewById(R.id.listLoadingPanelDisplayIncome);
+        headerContainer = findViewById(R.id.containerHeaderDisplayIncome);
+        topBar = findViewById(R.id.topBarDisplayIncome);
+        difference = (TextView)findViewById(R.id.differenceDisplayIncome);
+        overUnder = (TextView)findViewById(R.id.overUnderDisplayIncome);
 
         topLoadingPanel.setVisibility(View.VISIBLE);
         listLoadingPanel.setVisibility(View.VISIBLE);
@@ -118,6 +132,10 @@ public class DisplayIncome extends Activity {
 
     private class AsyncLoadProjectedAndActual extends AsyncTask<Void,Void,String[]>{
 
+        double projIncome;
+        double actIncome;
+        double diff;
+
         @Override
         protected void onPreExecute(){
             topLoadingPanel.setVisibility(View.VISIBLE);
@@ -126,15 +144,42 @@ public class DisplayIncome extends Activity {
         @Override
         protected String[] doInBackground(Void... params) {
 
-            //get projected expense and actual expenses
-            double projExpense = projectedIncome().getIncome();
-            double actualExpense = actualIncome();
+            //get projected expenses and actual income
+            projIncome = projectedIncome().getIncome();
+            actIncome = actualIncome();
+            diff = actIncome - projIncome;
 
             //currency formatter
             NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
+            //formatter to convert double under 1000 to currency (only for difference text view)
+            DecimalFormat lowFmt = new DecimalFormat("+$#,##0.00;-$#,##0.00");
+
+            //formatter to convert double over 1000 to currency (only for difference text view)
+            DecimalFormat highFmt = new DecimalFormat("+$#,##0.0;-$#,##0.0");
+
+            String fmtDiff;
+
+            //create shortened format of difference
+            if(Math.abs(diff) < 1000){
+
+                fmtDiff = lowFmt.format(diff);
+            }else if(Math.abs(diff) >= 1000 && Math.abs(diff) < 1000000 ){
+
+                diff = diff / 1000;
+                fmtDiff = highFmt.format(diff) + "K";
+            }else if (Math.abs(diff) >= 1000000 && Math.abs(diff) < 1000000000){
+
+                diff = diff / 1000000;
+                fmtDiff = highFmt.format(diff) + "M";
+            }else{
+
+                diff = diff / 1000000000;
+                fmtDiff = highFmt.format(diff) + "B";
+            }
+
             //String array that is returned
-            String[] numbers = {fmt.format(projExpense),fmt.format(actualExpense)};
+            String[] numbers = {fmt.format(projIncome),fmt.format(actIncome),fmtDiff};
             return numbers;
 
 
@@ -143,9 +188,86 @@ public class DisplayIncome extends Activity {
         @Override
         protected void onPostExecute(String[] numbers) {
 
+            String ovUn;
+
+            //round because double doesn't know how to math
+            double roundTotSpent = Math.round(actIncome *100.0)/100.0;
+            double roundAllExp = Math.round(projIncome *100.0)/100.0;
+
+            if(roundTotSpent < roundAllExp){
+                ovUn = "Under";
+                headerContainer.setBackgroundColor(getResources().getColor(R.color.colorListRed));
+
+                topBar.setBackgroundColor(getResources().getColor(R.color.colorListRed));
+                if(Build.VERSION.SDK_INT >= 21){
+                    Window window = getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                    // finally change the color
+                    window.setStatusBarColor(ContextCompat.getColor(DisplayIncome.this,R.color.colorListRedDark));
+                    ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(
+                            getResources().getString(R.string.app_name), BitmapFactory.decodeResource(
+                            getResources(),R.mipmap.budget_logo), getResources().getColor(R.color.colorListRed));
+                    setTaskDescription(taskDescription);
+                }
+
+            }else if(roundTotSpent == roundAllExp){
+                ovUn = "Even";
+                headerContainer.setBackgroundColor(getResources().getColor(R.color.colorListNeutral));
+                topBar.setBackgroundColor(getResources().getColor(R.color.colorListNeutral));
+                if(Build.VERSION.SDK_INT >= 21){
+                    Window window = getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                    // finally change the color
+                    window.setStatusBarColor(ContextCompat.getColor(DisplayIncome.this,R.color.colorPrimaryDark));
+                    ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(
+                            getResources().getString(R.string.app_name), BitmapFactory.decodeResource(
+                            getResources(),R.mipmap.budget_logo), getResources().getColor(R.color.colorPrimary));
+                    setTaskDescription(taskDescription);
+                }
+            }else {
+                ovUn = "Over";
+                headerContainer.setBackgroundColor(getResources().getColor(R.color.colorListGreen));
+
+                topBar.setBackgroundColor(getResources().getColor(R.color.colorListGreen));
+                Log.d("changeColor", "change");
+                if(Build.VERSION.SDK_INT >= 21){
+
+                    Log.d("changeColor", "change");
+                    Window window = getWindow();
+
+                    // clear FLAG_TRANSLUCENT_STATUS flag:
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+                    // add FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS flag to the window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+
+                    // finally change the color
+                    window.setStatusBarColor(ContextCompat.getColor(DisplayIncome.this,R.color.colorListGreenDark));
+                    ActivityManager.TaskDescription taskDescription = new ActivityManager.TaskDescription(
+                            getResources().getString(R.string.app_name), BitmapFactory.decodeResource(
+                            getResources(),R.mipmap.budget_logo), getResources().getColor(R.color.colorListGreen));
+                    setTaskDescription(taskDescription);
+                }
+
+            }
+
 
             projected.setText(numbers[0]);
             actual.setText(numbers[1]);
+            difference.setText(numbers[2]);
+            overUnder.setText(ovUn);
             topLoadingPanel.setVisibility(View.GONE);
         }
     }

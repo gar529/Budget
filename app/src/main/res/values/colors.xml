@@ -14,4 +14,6 @@
     <color name="colorLightText">#FFFFFF</color>
     <color name="colorShadow">#59C0C0C0</color>
     <color name="colorCirclePressed">#5974FF</color>
+    <color name="colorInvisible">#00000000</color>
+    <color name="colorLightGray">#C0C0C0</color>
 </resources>

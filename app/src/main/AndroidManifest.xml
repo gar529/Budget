@@ -8,16 +8,20 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SwipeViews">
+        <activity
+            android:name=".SwipeViews"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayCategory"></activity>
-        <activity android:name=".DisplayIncome"></activity>
-        <activity android:name=".AddBudget"></activity>
+        <activity
+            android:name=".DisplayCategory"
+            android:screenOrientation="portrait"></activity>
+        <activity android:name=".DisplayIncome" android:screenOrientation="portrait"></activity>
+        <activity android:name=".AddBudget" android:screenOrientation="portrait"></activity>
 
     </application>
 

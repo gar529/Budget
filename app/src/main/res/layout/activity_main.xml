@@ -59,13 +59,29 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/projected"
+
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:text="@string/projected_expenses"
-                                android:textColor="@color/colorLightText"/>
+                                android:orientation="horizontal">
+                                <TextView
+                                    android:id="@+id/projected"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textStyle="bold"
+                                    android:text="@string/projected_expenses"
+                                    android:textColor="@color/colorLightText" />
+                                <ImageView
+                                    android:id="@+id/swapHeader"
+                                    android:layout_marginStart="10dp"
+                                    android:layout_width="14dp"
+                                    android:layout_height="14dp"
+                                    android:src="@drawable/white_swap_arrows"
+                                    android:layout_gravity="center_vertical"
+                                    android:clickable="true"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    />
+                            </LinearLayout>
                             <TextView
                                 android:id="@+id/projectedValue"
                                 android:layout_width="wrap_content"
@@ -143,7 +159,7 @@
                 android:id="@+id/headerLoadingPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBackgroundList"
+                android:background="@color/colorInvisible"
                 android:gravity="center" >
 
                 <ProgressBar
@@ -185,7 +201,7 @@
                 android:id="@+id/listLoadingPanel"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorBackgroundList"
+                android:background="@color/colorInvisible"
                 android:gravity="center" >
 
                 <ProgressBar

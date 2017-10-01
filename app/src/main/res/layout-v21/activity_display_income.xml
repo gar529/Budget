@@ -11,10 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
+            android:id="@+id/topBarDisplayIncome"
             android:background="@color/colorListNeutral"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
+
             <ImageView
                 android:id="@+id/backButtonDisplayIncome"
                 android:layout_weight=".5"
@@ -24,7 +27,7 @@
                 android:clickable="true"
                 android:paddingTop="17dp"
                 android:paddingBottom="17dp"
-                android:gravity="start"
+                android:gravity="left"
                 android:background="?android:attr/selectableItemBackgroundBorderless"/>
             <TextView
                 android:id="@+id/categoryDisplayIncome"
@@ -50,58 +53,101 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+                    <!-- Container to wrap left and right containers to height of right container -->
                     <LinearLayout
-                        android:padding="20dp"
+                        android:background="@color/colorListNeutral"
+                        android:orientation="vertical"
+                        android:id="@+id/containerHeaderDisplayIncome"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:paddingStart="20dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="20dp"
+                        android:paddingBottom="5dp">
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
+                            <!-- Container for left side of layout-->
                             <LinearLayout
-                                android:orientation="vertical"
+                                android:layout_gravity="center_vertical"
                                 android:layout_width="0dp"
+                                android:layout_weight="1"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
-                                <TextView
-                                    android:layout_gravity="center_vertical"
+                                android:orientation="vertical">
+                                <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textStyle="bold"
-                                    android:text="@string/projected_expenses"
-                                    android:textSize="20sp" />
-                                <TextView
-                                    android:layout_gravity="center_vertical"
-                                    android:id="@+id/projectedTextViewDisplayIncome"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textStyle="bold"
+                                        android:text="@string/projected_expenses"
+                                        android:textColor="@color/colorLightText"/>
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:orientation="horizontal">
+                                        <TextView
+                                            android:layout_gravity="center_vertical"
+                                            android:id="@+id/projectedTextViewDisplayIncome"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:textColor="@color/colorLightText"/>
+                                    </LinearLayout>
+                                </LinearLayout>
+                                <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:textSize="20sp"/>
+                                    android:orientation="vertical">
+                                    <TextView
+
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="@string/earned"
+                                        android:textStyle="bold"
+                                        android:textColor="@color/colorLightText"/>
+                                    <TextView
+                                        android:id="@+id/actualDisplayIncome"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/colorLightText"/>
+                                </LinearLayout>
                             </LinearLayout>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical">
-                            <TextView
+                            <!-- Container for Right Side of layout-->
+                            <RelativeLayout
+                                android:id="@+id/rightSideLayout"
+                                android:layout_gravity="end|center_vertical"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:textStyle="bold"
-                                android:text="@string/earned"
-                                android:textSize="20sp"/>
-                            <TextView
-                                android:id="@+id/actualDisplayIncome"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:maxLines="2"
-                                android:textSize="20sp"/>
+                                android:background="@drawable/circle_for_header">
+                                <LinearLayout
+                                    android:layout_centerInParent="true"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:id="@+id/differenceDisplayIncome"
+                                        android:layout_gravity="center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/colorLightText"/>
+                                    <TextView
+                                        android:id="@+id/overUnderDisplayIncome"
+                                        android:layout_gravity="center"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:textColor="@color/colorLightText"/>
+                                </LinearLayout>
+                            </RelativeLayout>
                         </LinearLayout>
                     </LinearLayout>
                     <RelativeLayout
                         android:id="@+id/topLoadingPanelDisplayIncome"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundList"
+                        android:background="@color/colorInvisible"
                         android:gravity="center" >
 
                         <ProgressBar
@@ -115,15 +161,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1">
-                <ListView
-                    android:id="@+id/listViewDisplayIncome"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <ListView
+                        android:id="@+id/listViewDisplayIncome"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="10dp"
+                        android:background="@drawable/header_shadow">
+                    </RelativeLayout>
                     <RelativeLayout
                         android:id="@+id/listLoadingPanelDisplayIncome"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBackgroundList"
+                        android:background="@color/colorInvisible"
                         android:gravity="center" >
                         <ProgressBar
                             android:id="@+id/listProgressDisplayIncome"
@@ -133,14 +184,21 @@
                     </RelativeLayout>
                 </FrameLayout>
             </LinearLayout>
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="10dp"
                 android:background="@drawable/header_shadow">
-
-            </RelativeLayout>
+            </RelativeLayout>-->
         </FrameLayout>
+
+
+
+
+
+
     </LinearLayout>
+
+
     <android.support.design.widget.FloatingActionButton
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_margin="30dp"
@@ -153,5 +211,7 @@
         app:rippleColor="@color/colorCirclePressed"
         app:backgroundTint="@color/colorListNeutral"
         android:layout_gravity="bottom|end"
-        android:clickable="true" />
+        android:clickable="true"
+        />
+
 </android.support.design.widget.CoordinatorLayout>
