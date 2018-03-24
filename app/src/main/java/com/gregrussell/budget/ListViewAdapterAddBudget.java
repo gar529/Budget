@@ -20,22 +20,22 @@ import java.util.List;
 
 public class ListViewAdapterAddBudget extends BaseAdapter {
 
-    List<CategoryObj> categoryObjList = new ArrayList<CategoryObj>();
+    ListDataObj listData = new ListDataObj();
     private LayoutInflater inflater;
     Context context;
 
-    public ListViewAdapterAddBudget(Context context, List<CategoryObj> categoryObjList){
+    public ListViewAdapterAddBudget(Context context, ListDataObj listData){
 
-        Log.d("listViewAdapterAll", "List view adapter class has run " + categoryObjList.size() );
+        Log.d("listViewAdapterAll", "List view adapter class has run " + listData.getCategoryList().size() );
         this.context = context;
-        this.categoryObjList = categoryObjList;
+        this.listData = listData;
         inflater = ((Activity)context).getLayoutInflater();
     }
 
 
     @Override
     public int getCount() {
-        return categoryObjList.size();
+        return listData.getCategoryList().size();
     }
 
     @Override
@@ -54,14 +54,51 @@ public class ListViewAdapterAddBudget extends BaseAdapter {
         Log.d("listViewAdapterAll", "List view adapter getView method");
         View currentView = convertView;
         if(currentView == null){
-            currentView = inflater.inflate(R.layout.add_budget_category_list_item_layout,parent,false);
+            currentView = inflater.inflate(R.layout.list_item_layout_copy_budgets,parent,false);
         }
-        final TextView category = (TextView)currentView.findViewById(R.id.categoryAddBudgetListItem);
-        TextView remove = (TextView)currentView.findViewById(R.id.removeCategoryAddBudgetListItem);
 
-        //assign textViews
-        category.setText(categoryObjList.get(position).getCategoryName());
-        remove.setOnClickListener(new View.OnClickListener() {
+        TextView categoryName = (TextView)currentView.findViewById(R.id.copyBudgetListCategoryName);
+        TextView spentText = (TextView)currentView.findViewById(R.id.copyBudgetListSpent);
+        TextView amount = (TextView)currentView.findViewById(R.id.copyBudgetAmount);
+
+        List<String> categoryList = listData.getCategoryList();
+        List<Double> expenseList = listData.getSpentList();
+        List<Double> income = listData.getSpentList();
+
+
+
+        //first item in the list will be income related. not using that so skip
+
+
+        String category;
+        double expense;
+
+
+        //standard currency format
+        NumberFormat fmt = NumberFormat.getCurrencyInstance();
+
+
+
+        /*if(position == 0){
+            category = (context.getResources().getString(R.string.total_expenses));
+            expense = listData.getTotalSpent();
+        }else{
+            category = categoryList.get(position);
+            spentText.setText(R.string.projected_expense);
+            expense = expenseList.get(position);
+        }*/
+
+
+        category = categoryList.get(position);
+        spentText.setText(R.string.projected_expense);
+        expense = expenseList.get(position);
+
+        String fmtExpense = fmt.format(expense);
+        categoryName.setText(category);
+        amount.setText(fmtExpense);
+
+
+        /*remove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("categoriesList adapter", "categoryObjList size is " + categoryObjList.size() + " removed will be " + categoryObjList.get(position).getCategoryName());
@@ -79,7 +116,7 @@ public class ListViewAdapterAddBudget extends BaseAdapter {
                 AddBudget.listViewCategoriesAdd.setAdapter(null);
                 AddBudget.listViewCategoriesAdd.setAdapter(adapter);
             }
-        });
+        });*/
 
         return currentView;
 

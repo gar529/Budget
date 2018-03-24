@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.List;
 
 /**
@@ -60,7 +61,8 @@ public class SelectTypeFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                AddBudgetSwipeView.mPager.setCurrentItem(2);
+                AsyncNewBudget task = new AsyncNewBudget();
+                task.execute();
 
             }
         });
@@ -183,7 +185,7 @@ public class SelectTypeFragment extends Fragment {
                 .setTitle("Copy Budget \"" + addBudgetObject.getUsedCategoryListData().getBudgetName()+ "\"?")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        AsyncFinishSelectTypeFragment task = new AsyncFinishSelectTypeFragment();
+                        AsyncCopyPreviousBudget task = new AsyncCopyPreviousBudget();
                         task.execute();
                     }
                 })
@@ -208,7 +210,7 @@ public class SelectTypeFragment extends Fragment {
 
     }
 
-    private class AsyncFinishSelectTypeFragment extends AsyncTask<Void,Void,Boolean> {
+    private class AsyncCopyPreviousBudget extends AsyncTask<Void,Void,Boolean> {
 
         int budgetID = addBudgetObject.getCopiedBudgetID();
         ListDataObj listData = addBudgetObject.getUsedCategoryListData();
@@ -246,6 +248,54 @@ public class SelectTypeFragment extends Fragment {
             AddBudgetFragment.categoryList.setAdapter(adapter);
             adapter.notifyDataSetChanged();
 
+            //standard currency format
+            NumberFormat fmt = NumberFormat.getCurrencyInstance();
+
+            AddBudgetFragment.expensesAmount.setText(fmt.format(listData.getTotalSpent()));
+            AddBudgetSwipeView.mPager.setCurrentItem(2);
+        }
+
+    }
+
+
+    private class AsyncNewBudget extends AsyncTask<Void,Void,Boolean> {
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            DataBaseHelperCategory myDBHelper = new DataBaseHelperCategory(mContext);
+            try {
+                myDBHelper.createDataBase();
+            } catch (IOException ioe) {
+                throw new Error("Unable to create database");
+            }
+            try {
+                myDBHelper.openDataBase();
+            } catch (SQLException sqle) {
+                throw sqle;
+            }
+
+
+            addBudgetObject.setUsedCategoryListData(myDBHelper.getDefaultCategoriesAsListData());
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result){
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            ViewGroup view = (ViewGroup)inflater.inflate(R.layout.add_budget_fragment_layout,null);
+            //ListView list = (ListView)view.findViewById(R.id.addBudgetFragmentListView);
+            ListViewAdapterAddBudgetFragment adapter = new ListViewAdapterAddBudgetFragment(mContext, addBudgetObject.getUsedCategoryListData());
+            AddBudgetFragment.categoryList.setAdapter(null);
+            AddBudgetFragment.categoryList.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+
+            //standard currency format
+            NumberFormat fmt = NumberFormat.getCurrencyInstance();
+
+            AddBudgetFragment.expensesAmount.setText(fmt.format(addBudgetObject.getUsedCategoryListData().getTotalSpent()));
             AddBudgetSwipeView.mPager.setCurrentItem(2);
         }
 

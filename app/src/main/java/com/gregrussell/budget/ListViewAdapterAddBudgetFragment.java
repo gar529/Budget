@@ -29,6 +29,8 @@ public class ListViewAdapterAddBudgetFragment extends BaseAdapter {
         this.context = context;
         this.listData = listData;
         inflater = ((Activity)context).getLayoutInflater();
+
+
     }
 
 
@@ -63,6 +65,8 @@ public class ListViewAdapterAddBudgetFragment extends BaseAdapter {
         List<Double> expenseList = listData.getSpentList();
         List<Double> income = listData.getSpentList();
 
+
+
         //first item in the list will be income related. not using that so skip
 
 
@@ -75,14 +79,19 @@ public class ListViewAdapterAddBudgetFragment extends BaseAdapter {
 
 
 
-        if(position == 0){
+        /*if(position == 0){
             category = (context.getResources().getString(R.string.total_expenses));
             expense = listData.getTotalSpent();
         }else{
             category = categoryList.get(position);
             spentText.setText(R.string.projected_expense);
             expense = expenseList.get(position);
-        }
+        }*/
+
+
+        category = categoryList.get(position);
+        spentText.setText(R.string.projected_expense);
+        expense = expenseList.get(position);
 
         String fmtExpense = fmt.format(expense);
         categoryName.setText(category);

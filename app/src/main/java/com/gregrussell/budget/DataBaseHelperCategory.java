@@ -770,6 +770,107 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
         return ldo;
     }
 
+    public ListDataObj createListDataNoIncome(int budgetID){
+
+        Log.d("ListDataObj create", String.valueOf(budgetID));
+
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        //get budget name
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Budgets.BUDGETS_TABLE_NAME + " WHERE " +
+                Budgets._ID  + " = " + budgetID,null);
+        cursor.moveToFirst();
+
+        String budgetName = "";
+        try {
+            budgetName = cursor.getString(Constants.BUDGETS_NAME_POSITION);
+        }catch (Exception e){
+
+        }
+
+
+        //get sum of projected expenses
+        double allExpenses;
+        cursor = db.rawQuery("SELECT SUM(" + Expenses.EXPENSES_ESTIMATE + ") FROM " +
+                Expenses.EXPENSES_TABLE_NAME + " WHERE " + Expenses.EXPENSES_BUDGET_ID + " = " +
+                budgetID,null);
+        if(cursor.moveToFirst()) {
+            allExpenses = cursor.getDouble(0);
+        }
+        else allExpenses = 0;
+
+        //get sum of all money spent
+        double spent;
+        cursor = db.rawQuery("SELECT SUM(" + Spending.SPENDING_SPENT + ") FROM " +
+                Spending.SPENDING_TABLE_NAME + " WHERE " + Spending.SPENDING_BUDGET_ID + " = " +
+                budgetID,null);
+        if(cursor.moveToFirst()){
+            spent = cursor.getDouble(0);
+            Log.d("createlist", String.valueOf(cursor.getFloat(0)));
+        }
+
+
+        else spent = 0;
+
+
+        //get categories and projected expenses for each category
+        List<String> categoryList = new ArrayList<String >(); //list to be added to ldo
+        List<Double> expensesList = new ArrayList<Double>(); //list to be added to ldo
+        List<Integer> categoryIDList = new ArrayList<Integer>(); //list to keep position for spent list
+        categoryList.add(income);
+        categoryIDList.add(0);
+
+
+        expensesList.add(getAllExpenses(budgetID));
+        //update projected income value to be the total of all expenses (for zero sum budget,
+        //income should match projected expenses
+        updateIncome(budgetID,getAllExpenses(budgetID));
+
+
+
+
+        cursor = db.rawQuery("SELECT * FROM " + Expenses.EXPENSES_TABLE_NAME + " WHERE " +
+                Expenses.EXPENSES_BUDGET_ID + " = " + budgetID + " ORDER BY " + Expenses.EXPENSES_ESTIMATE +
+                " DESC",null);
+
+        if(cursor.moveToFirst()){
+            do{
+                categoryList.add(cursor.getString(Constants.EXPENSES_CATEGORY_NAME_POSITION));
+                expensesList.add(cursor.getDouble(Constants.EXPENSES_ESTIMATED_EXPENSE_POSITION));
+                categoryIDList.add(cursor.getInt(Constants.EXPENSES_CATEGORY_ID_POSITION));
+            } while (cursor.moveToNext());
+        }
+
+
+        //get spending for each category
+        List<Double> spentList = getSpentList(budgetID, categoryIDList);
+
+        //remove income values from lists
+        categoryIDList.remove(0);
+        categoryList.remove(0);
+        expensesList.remove(0);
+        spentList.remove(0);
+
+        //add values to list data object
+        ListDataObj ldo = new ListDataObj(budgetName,allExpenses,spent,categoryIDList,categoryList,expensesList,spentList);
+        ldo.setBudgetName(budgetName);
+        ldo.setAllExpenses(allExpenses);
+        ldo.setTotalSpent(spent);
+        ldo.setCategoryIDList(categoryIDList);
+        ldo.setCategoryList(categoryList);
+        ldo.setExpenseList(expensesList);
+        ldo.setSpentList(spentList);
+
+        cursor.close();
+        return ldo;
+    }
+
+
+
+
 
     private List<Double> getSpentList(int budgetID, List<Integer> categoryIDList){
 
@@ -1287,6 +1388,37 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
         }
         cursor.close();
         return usedList;
+    }
+
+    public ListDataObj getDefaultCategoriesAsListData(){
+
+
+        String budgetName = "";
+        double allExpenses = 0.00;
+        double totalSpent = 0.00;
+        List<Integer>categoryIDList = new ArrayList<Integer>();
+        List<String>categoryList = new ArrayList<String>();
+        List<Double>expensesList = new ArrayList<Double>();
+        List<Double>spentList = new ArrayList<Double>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + Categories.CATEGORIES_TABLE_NAME + " WHERE " +
+                Categories.CATEGORIES_DEFAULT + " = " + 1,null);
+
+        if(cursor.moveToFirst()){
+            do {
+                categoryIDList.add(null);
+                categoryList.add(cursor.getString(Constants.CATEGORIES_NAME_POSITION));
+                expensesList.add(0.00);
+                spentList.add(0.00);
+
+            }while (cursor.moveToNext());
+        }
+        cursor.close();
+
+        return new ListDataObj(budgetName,allExpenses,totalSpent,categoryIDList,categoryList,expensesList,spentList);
+
+
     }
 
     //returns list of categories that aren't default

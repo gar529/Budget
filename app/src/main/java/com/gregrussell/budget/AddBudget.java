@@ -113,8 +113,8 @@ public class AddBudget extends Activity {
         @Override
         protected void onPostExecute(Boolean result) {
 
-            ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
-            listViewCategoriesAdd.setAdapter(adapter);
+            //ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
+            //listViewCategoriesAdd.setAdapter(adapter);
         }
     }
 
@@ -217,9 +217,9 @@ public class AddBudget extends Activity {
                                     usedCategoriesList.add(categoryObj);
                                     Log.d("categoriesListNew","usedCategories size " + usedCategoriesList.size());
                                     Log.d("categoriesListNew","unusedCategories size " + unusedCategoriesList.size());
-                                    ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
-                                    listViewCategoriesAdd.setAdapter(null);
-                                    listViewCategoriesAdd.setAdapter(adapter);
+                                    //ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
+                                    //listViewCategoriesAdd.setAdapter(null);
+                                    //listViewCategoriesAdd.setAdapter(adapter);
                                 } else if (spinnerPosition >= unusedCategoriesList.size()) {
                                     new AlertDialog.Builder(AddBudget.this)
                                             .setTitle("Invalid Category Name")
@@ -236,10 +236,10 @@ public class AddBudget extends Activity {
                                     usedCategoriesList.add(categoryObj);
                                     Log.d("categoriesListNew","usedCategories size " + usedCategoriesList.size());
                                     Log.d("categoriesListNew","unusedCategories size " + unusedCategoriesList.size());
-                                    ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
+                                    //ListViewAdapterAddBudget adapter = new ListViewAdapterAddBudget(AddBudget.this, usedCategoriesList);
                                     unusedCategoriesList.remove(spinnerPosition);
                                     listViewCategoriesAdd.setAdapter(null);
-                                    listViewCategoriesAdd.setAdapter(adapter);
+                                    //listViewCategoriesAdd.setAdapter(adapter);
                                 }
                             }
 

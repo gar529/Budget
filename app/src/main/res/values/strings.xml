@@ -37,7 +37,7 @@
     <string name="next">Next</string>
     <string name="copy_old">Copy Previous Budget</string>
     <string name="create_new">Create New Budget</string>
-    <string name="categories_to_add">Categories to add</string>
+    <string name="categories_to_add">Categories to add:</string>
     <string name="total_expenses">Total Projected Expenses:</string>
     <string name="projected_expense">Projected Expense:\u0020</string>
 
