@@ -161,7 +161,6 @@ public class DataBaseHelperCategory extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
 
-        //income is a special category that will always be used. Its category column has '2' to show it's special
 
 
         for(int i= 0; i < categories.length; i++) {

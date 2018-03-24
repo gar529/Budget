@@ -45,6 +45,7 @@ public class AddBudget extends Activity {
     int spinnerPosition;
     EditText editTextBudgetName;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +64,7 @@ public class AddBudget extends Activity {
         setContentView(R.layout.add_new_budget);
         listViewCategoriesAdd = (ListView) findViewById(R.id.listViewAddBudget);
         addCategoryButton = (ImageView) findViewById(R.id.addCategoryAddNewBudget);
+
         editTextBudgetName = (EditText)findViewById(R.id.editTextAddNewBudget);
         addCategoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +74,13 @@ public class AddBudget extends Activity {
         });
         AsyncGetLists task = new AsyncGetLists();
         task.execute();
-
+        Button copyBudgetButton = (Button) findViewById(R.id.addCategoryCopyPreviousBudget);
+        copyBudgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyBudgetListDialog();
+            }
+        });
         Button createBudgetButton = (Button)findViewById(R.id.createAddNewBudget);
         createBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -447,6 +455,98 @@ public class AddBudget extends Activity {
             createBudget.execute(String.valueOf(editTextBudgetName.getText()).trim());
         }
 
+
+
+    }
+
+
+
+    private void copyBudgetListDialog(){
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View copyBudgetCategoryList = inflater.inflate(R.layout.copy_category_list_dialog,null);
+        final ListView categoryList = (ListView)copyBudgetCategoryList.findViewById(R.id.copy_category_list_dialog_list_view);
+
+        final List <BudgetListItemObj> budgetList = myDBHelper.getAllBudgetsList();
+        final ListViewAdapterListOfCategories adapter = new ListViewAdapterListOfCategories(this,budgetList);
+        categoryList.setAdapter(adapter);
+
+
+        //create a dialog box to enter new projected expenses
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(copyBudgetCategoryList);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setTitle("Copy Budget")
+                .setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        // create alert dialog
+        final AlertDialog alertDialog = alertDialogBuilder.create();
+        categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int budgetID = budgetList.get(position).getBudgetID();
+                Log.d("copyBudget", "selected budget is " + budgetID);
+                alertDialog.dismiss();
+                copyBudgetSelectedDialog(budgetID);
+            }
+        });
+
+
+        alertDialog.show();
+    }
+
+    private void copyBudgetSelectedDialog(int budgetID){
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View copyBudgetCategoryList = inflater.inflate(R.layout.copy_category_list_dialog,null);
+        final ListView listView = (ListView)copyBudgetCategoryList.findViewById(R.id.copy_category_list_dialog_list_view);
+
+        final ListDataObj listData = myDBHelper.createListData(budgetID);
+        final ListViewAdapterCopyBudgetList adapter = new ListViewAdapterCopyBudgetList(this,listData);
+        listView.setAdapter(adapter);
+
+
+        //create a dialog box to enter new projected expenses
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+        // set prompts.xml to alertdialog builder
+        alertDialogBuilder.setView(copyBudgetCategoryList);
+
+        // set dialog message
+        alertDialogBuilder
+                .setCancelable(false)
+                .setTitle("Copy Budget \"" + listData.getBudgetName()+ "\"?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setNeutralButton(getResources().getString(R.string.back), new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        copyBudgetListDialog();
+                    }
+                });
+
+        // create alert dialog
+        AlertDialog alertDialog = alertDialogBuilder.create();
+
+
+
+        alertDialog.show();
 
 
     }

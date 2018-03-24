@@ -22,6 +22,7 @@
             android:screenOrientation="portrait"></activity>
         <activity android:name=".DisplayIncome" android:screenOrientation="portrait"></activity>
         <activity android:name=".AddBudget" android:screenOrientation="portrait"></activity>
+        <activity android:name=".AddBudgetSwipeView" android:screenOrientation="portrait"></activity>
 
     </application>
 

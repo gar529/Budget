@@ -482,7 +482,7 @@ public class BudgetListFragment extends Fragment{
     private void addBudget(){
 
 
-        Intent intent = new Intent(context,AddBudget.class);
+        Intent intent = new Intent(context,AddBudgetSwipeView.class);
         startActivity(intent);
 
     }

@@ -55,11 +55,22 @@
                 android:imeOptions="actionDone"
                 android:maxLength="50"
                 android:hint="@string/hint_add_new_budget"
+                android:textColorHint="@color/colorLightText"
+                android:textColor="@color/colorLightText"
                 android:textSize="20sp"
                 android:padding="5dp"
-                android:background="@drawable/edit_text_light_background"
                 android:textCursorDrawable="@null"
-                android:layout_marginBottom="30dp"/>
+                android:layout_marginBottom="15dp"/>
+            <!--android:background="@drawable/edit_text_light_background"-->
+
+            <Button
+                android:layout_alignParentEnd="true"
+                android:id="@+id/addCategoryCopyPreviousBudget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/button_light"
+                android:text="Copy Previous Budget"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

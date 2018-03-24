@@ -31,6 +31,12 @@
     <string name="menu_remove">Remove</string>
     <string name="checkbox_rename_category">Apply Change To All Categories</string>
     <string name="x">X</string>
+    <string name="back">Back</string>
+    <string name="enter_name">Enter a name for your new budget</string>
+    <string name="create_budget_welcome">Let\'s create a new budget</string>
+    <string name="next">Next</string>
+    <string name="copy_old">Copy Previous Budget</string>
+    <string name="create_new">Create New Budget</string>
 
 
 </resources>

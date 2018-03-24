@@ -12,6 +12,7 @@ import android.graphics.LightingColorFilter;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -83,6 +84,7 @@ public class CurrentBudgetFragment extends Fragment {
     ListDataObj listData;
     int longClickedBudget;
     boolean renameApplyToAllBudgets;
+    Parcelable state;
 
     @Override
     public void onResume(){
@@ -101,6 +103,28 @@ public class CurrentBudgetFragment extends Fragment {
 
 
     }
+
+    @Override
+    public void onPause(){
+
+        Log.d("categoryListView save", "saving the state on pause");
+        if(listView != null) {
+            state = listView.onSaveInstanceState();
+        }
+        super.onPause();
+    }
+
+    /*@Override
+    public void onViewCreated(final View view, Bundle savedInstanceState){
+        super.onViewCreated(view, savedInstanceState);
+
+        listView.setAdapter(adapter);
+
+        if(state != null){
+            Log.d("categoryListView save", "trying to restore list view positon");
+            listView.onRestoreInstanceState(state);
+        }
+    }*/
 
 
 
@@ -593,6 +617,11 @@ public class CurrentBudgetFragment extends Fragment {
             Log.d("listView", "listViewAdapter set");
 
             listView.setAdapter(adapter);
+
+            if(state != null){
+                Log.d("categoryListView save", "trying to restore list view positon");
+                listView.onRestoreInstanceState(state);
+            }
 
             //set listener for list item click
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
