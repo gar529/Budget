@@ -322,7 +322,7 @@ public class CurrentBudgetFragment extends Fragment {
 
                         dialog.cancel();
 
-                        Intent intent = new Intent(context,AddBudget.class);
+                        Intent intent = new Intent(context,AddBudgetSwipeView.class);
                         startActivity(intent);
                     }
                 })

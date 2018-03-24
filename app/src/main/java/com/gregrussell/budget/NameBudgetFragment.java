@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -26,6 +27,9 @@ public class NameBudgetFragment extends Fragment {
 
     Context mContext;
     EditText nameField;
+    AddBudgetSwipeView obj = new AddBudgetSwipeView();
+
+
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,7 +65,7 @@ public class NameBudgetFragment extends Fragment {
     private class AsyncNextPage extends AsyncTask<String,Void,Boolean>{
 
         DataBaseHelperCategory myDBHelper = new DataBaseHelperCategory(mContext);
-        AddBudgetSwipeView obj = new AddBudgetSwipeView();
+
 
 
         @Override
@@ -130,6 +134,9 @@ public class NameBudgetFragment extends Fragment {
 }
     private void nextPage(){
 
+
+
+        Log.d("nameBudgetFrag", "before moving to next page, budget name is " + obj.getBudgetName());
         AddBudgetSwipeView.mPager.setCurrentItem(1);
 
 

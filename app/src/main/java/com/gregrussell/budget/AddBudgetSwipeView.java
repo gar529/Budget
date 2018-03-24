@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+
 /**
  * Created by greg on 3/21/2018.
  */
@@ -38,8 +40,18 @@ public class AddBudgetSwipeView extends Activity {
     ViewGroup swipeViewsLayoutContainer;
     int longClickPos;
 
-    private String budgetName;
 
+    private static int copiedBudgetID;
+    private static List<CategoryObj> unusedCategoriesList;
+    private static String budgetName;
+    private static ListDataObj usedCategoryListData;
+
+    public ListDataObj getUsedCategoryListData(){
+        return this.usedCategoryListData;
+    }
+    public void setUsedCategoryListData(ListDataObj usedCategoryListData){
+        this.usedCategoryListData = usedCategoryListData;
+    }
 
     public String getBudgetName(){
         return this.budgetName;
@@ -47,6 +59,23 @@ public class AddBudgetSwipeView extends Activity {
     public void setBudgetName(String budgetName){
         this.budgetName = budgetName;
     }
+
+
+    public int getCopiedBudgetID(){
+        return this.copiedBudgetID;
+    }
+    public void setCopiedBudgetID(int copiedBudgetID){
+        this.copiedBudgetID = copiedBudgetID;
+    }
+
+    public List<CategoryObj> getUnusedCategoriesList(){
+        return this.unusedCategoriesList;
+    }
+    public void setUnusedCategoriesList(List<CategoryObj> unusedCategoriesList){
+        this.unusedCategoriesList = unusedCategoriesList;
+    }
+
+
 
     @Override
     protected void onPause(){
@@ -96,6 +125,7 @@ public class AddBudgetSwipeView extends Activity {
         //sliding tab class allows for icon to display which fragment we are on
         SlidingTabLayoutAddBudget slide = (SlidingTabLayoutAddBudget) findViewById(R.id.sliding_tabsAddBudget);
         slide.setViewPager(mPager);
+
 
 
         ImageView backArrow = (ImageView)findViewById(R.id.backButtonAddNewBudgetFragment);

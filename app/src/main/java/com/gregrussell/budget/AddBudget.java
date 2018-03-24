@@ -74,13 +74,13 @@ public class AddBudget extends Activity {
         });
         AsyncGetLists task = new AsyncGetLists();
         task.execute();
-        Button copyBudgetButton = (Button) findViewById(R.id.addCategoryCopyPreviousBudget);
+        /*Button copyBudgetButton = (Button) findViewById(R.id.addCategoryCopyPreviousBudget);
         copyBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 copyBudgetListDialog();
             }
-        });
+        });*/
         Button createBudgetButton = (Button)findViewById(R.id.createAddNewBudget);
         createBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +88,7 @@ public class AddBudget extends Activity {
                 addBudget();
             }
         });
-        ImageView backArrow = (ImageView)findViewById(R.id.backButtonAddNewBudget);
+        ImageView backArrow = (ImageView)findViewById(R.id.backButtonAddNewBudgetFragment);
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -919,8 +919,8 @@ public class SwipeViews extends Activity {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
-                            Intent intent = new Intent(SwipeViews.this,AddBudget.class);
-                            startActivity(intent);
+                            //Intent intent = new Intent(SwipeViews.this,AddBudgetSwipeView.class);
+                            //startActivity(intent);
                         }
                     })
 
