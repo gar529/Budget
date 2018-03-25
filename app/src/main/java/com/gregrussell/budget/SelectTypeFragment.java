@@ -32,6 +32,10 @@ public class SelectTypeFragment extends Fragment {
     Context mContext;
     AddBudgetSwipeView addBudgetObject = new AddBudgetSwipeView();
     String myString;
+    Button newBudgetButton;
+    Button copyBudgetButton;
+    AlertDialog selectBudgetDialog;
+
 
 
     @Override
@@ -43,12 +47,15 @@ public class SelectTypeFragment extends Fragment {
 
 
 
-        Button copyBudgetButton = (Button)rootView.findViewById(R.id.selectTypeFragmentCopy);
+        copyBudgetButton = (Button)rootView.findViewById(R.id.selectTypeFragmentCopy);
         copyBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //AddBudgetSwipeView.mPager.setCurrentItem(2);
 
+                copyBudgetButton.setEnabled(false);
+                long currentTime = System.currentTimeMillis();
+                while (currentTime + 150 > System.currentTimeMillis()){}
 
                 myString = addBudgetObject.getBudgetName();
                 Log.d("typebudgetFrag", "clicked the button, budget name is " + myString);
@@ -56,11 +63,14 @@ public class SelectTypeFragment extends Fragment {
             }
         });
 
-        Button newBudgetButton = (Button)rootView.findViewById(R.id.selectTypeFragmentNew);
+        newBudgetButton = (Button)rootView.findViewById(R.id.selectTypeFragmentNew);
         newBudgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                newBudgetButton.setEnabled(false);
+                long currentTime = System.currentTimeMillis();
+                while (currentTime + 150 > System.currentTimeMillis()){}
                 AsyncNewBudget task = new AsyncNewBudget();
                 task.execute();
 
@@ -94,6 +104,7 @@ public class SelectTypeFragment extends Fragment {
     }
 
     private void copyBudgetListDialog(){
+
 
         DataBaseHelperCategory myDBHelper = new DataBaseHelperCategory(mContext);
         try {
@@ -129,27 +140,40 @@ public class SelectTypeFragment extends Fragment {
                 .setTitle("Copy Budget")
                 .setPositiveButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        selectBudgetDialog = null;
                         dialog.dismiss();
                     }
                 });
 
         // create alert dialog
-        final AlertDialog alertDialog = alertDialogBuilder.create();
-        categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                addBudgetObject.setCopiedBudgetID(budgetList.get(position).getBudgetID());
-                Log.d("copyBudget", "selected budget is " + addBudgetObject.getCopiedBudgetID());
-                alertDialog.dismiss();
-                copyBudgetSelectedDialog(addBudgetObject.getCopiedBudgetID());
-            }
-        });
+        Log.d("selectTypeFragment", "alert dialog value " + String.valueOf(selectBudgetDialog));
+        if(selectBudgetDialog == null) {
+            selectBudgetDialog = alertDialogBuilder.create();
+            categoryList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    addBudgetObject.setCopiedBudgetID(budgetList.get(position).getBudgetID());
+                    Log.d("copyBudget", "selected budget is " + addBudgetObject.getCopiedBudgetID());
+                    selectBudgetDialog.dismiss();
+                    selectBudgetDialog = null;
+                    copyBudgetSelectedDialog(addBudgetObject.getCopiedBudgetID());
+
+                }
+            });
+
+            selectBudgetDialog.show();
 
 
-        alertDialog.show();
+        }else{
+
+
+        }
+        copyBudgetButton.setEnabled(true);
+
     }
 
     private void copyBudgetSelectedDialog(int budgetID){
+
 
         DataBaseHelperCategory myDBHelper = new DataBaseHelperCategory(mContext);
         try {
@@ -192,11 +216,13 @@ public class SelectTypeFragment extends Fragment {
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        //selectBudgetDialog = null;
                     }
                 })
                 .setNeutralButton(getResources().getString(R.string.back), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
+                        //selectBudgetDialog = null;
                         copyBudgetListDialog();
                     }
                 });
@@ -251,6 +277,7 @@ public class SelectTypeFragment extends Fragment {
             //standard currency format
             NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
+
             AddBudgetFragment.expensesAmount.setText(fmt.format(listData.getTotalSpent()));
             AddBudgetSwipeView.mPager.setCurrentItem(2);
         }
@@ -295,6 +322,7 @@ public class SelectTypeFragment extends Fragment {
             //standard currency format
             NumberFormat fmt = NumberFormat.getCurrencyInstance();
 
+            newBudgetButton.setEnabled(true);
             AddBudgetFragment.expensesAmount.setText(fmt.format(addBudgetObject.getUsedCategoryListData().getTotalSpent()));
             AddBudgetSwipeView.mPager.setCurrentItem(2);
         }

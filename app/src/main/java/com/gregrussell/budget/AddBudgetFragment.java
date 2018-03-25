@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
@@ -35,14 +37,23 @@ public class AddBudgetFragment extends Fragment {
     public static ListView categoryList;
     public static TextView expensesAmount;
     AddBudgetSwipeView addBudgetObject = new AddBudgetSwipeView();
+    Parcelable state;
 
     Context mContext;
 
     @Override
+    public void onPause(){
+        Log.d("AddBudgetFragment", "pausing");
+        super.onPause();
+    }
+
+    @Override
     public void onResume(){
-        super.onResume();
 
         Log.d("AddBudgetFragment", "resuming");
+        super.onResume();
+
+
     }
 
     @Override
@@ -57,6 +68,14 @@ public class AddBudgetFragment extends Fragment {
         expensesAmount = (TextView)rootView.findViewById(R.id.addBudgetFragmentExpensesAmount);
         TextView budgetNameTextView = (TextView)rootView.findViewById(R.id.addBudgetFragmentName);
         budgetNameTextView.setText(addBudgetObject.getBudgetName());
+        FloatingActionButton addCategoryButton = (FloatingActionButton)rootView.findViewById(R.id.addBudgetFragmentCategoryButton);
+        addCategoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
 
         Log.d("addBudgetFragment", "created " + addBudgetObject.getBudgetName());
 
@@ -90,7 +109,7 @@ public class AddBudgetFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-
+                onCategoryClick(position, addBudgetObject.getUsedCategoryListData().getCategoryList().get(position));
 
             }
         });
@@ -106,7 +125,7 @@ public class AddBudgetFragment extends Fragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View editCategoryDialog = inflater.inflate(R.layout.add_budget_edit_category_dialog,null);
         final EditText editText = (EditText)editCategoryDialog.findViewById(R.id.addBudgetEditDialogEditText);
-        final TextView categoryName = (TextView)editCategoryDialog.findViewById(R.id.categoryEditProjectedExpenses);
+        final TextView categoryName = (TextView)editCategoryDialog.findViewById(R.id.addBudgetCategoryDialogCategoryName);
         categoryName.setText(category);
 
         //create a dialog box to enter new projected expenses
@@ -198,11 +217,22 @@ public class AddBudgetFragment extends Fragment {
 
     private void updateProjectedExpense(int position, double expense){
 
+        //save state of listview position
+        if(categoryList != null) {
+            state = categoryList.onSaveInstanceState();
+        }
+
         addBudgetObject.getUsedCategoryListData().getSpentList().set(position, expense);
         ListViewAdapterAddBudgetFragment adapter = new ListViewAdapterAddBudgetFragment(mContext,addBudgetObject.getUsedCategoryListData());
         categoryList.setAdapter(null);
         categoryList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        //return to listView position
+        if(state != null){
+            Log.d("categoryListView save", "trying to restore list view positon");
+            categoryList.onRestoreInstanceState(state);
+        }
 
     }
 
@@ -220,14 +250,29 @@ public class AddBudgetFragment extends Fragment {
         listData.getExpenseList().remove(position);
         listData.getSpentList().remove(position);
 
+        //save state of listview position
+        if(categoryList != null) {
+            state = categoryList.onSaveInstanceState();
+        }
+
         addBudgetObject.setUsedCategoryListData(listData);
         ListViewAdapterAddBudgetFragment adapter = new ListViewAdapterAddBudgetFragment(mContext,addBudgetObject.getUsedCategoryListData());
         categoryList.setAdapter(null);
         categoryList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
+        //return to listView position
+        if(state != null){
+            Log.d("categoryListView save", "trying to restore list view positon");
+            categoryList.onRestoreInstanceState(state);
+        }
+
     }
 
+    private void addCategory(){
+
+
+    }
 
 }
 

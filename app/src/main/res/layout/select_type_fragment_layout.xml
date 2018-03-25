@@ -1,31 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
 
-
-        <Button
-
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="30dp"
-            android:id="@+id/selectTypeFragmentCopy"
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
+            android:layout_marginTop="50dp"
+            android:padding="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/copy_old"
-            style="@style/button"/>
+            android:textStyle="bold"
+            android:textSize="16sp"
 
-        <Button
+            android:text="@string/create_budget_welcome"/>
 
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:id="@+id/selectTypeFragmentNew"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/create_new"
-            style="@style/button"/>
+            android:text="@string/select_type_text"
+            android:paddingBottom="30dp"
+            android:paddingStart="50dp"
+            android:paddingEnd="50dp"/>
+    </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="top">
+            <Button
+
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_marginBottom="30dp"
+                android:id="@+id/selectTypeFragmentCopy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/copy_old"
+                style="@style/button"/>
+
+            <Button
+
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:id="@+id/selectTypeFragmentNew"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/create_new"
+                style="@style/button"/>
+        </LinearLayout>
 
 
 </LinearLayout>

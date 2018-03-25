@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.SQLException;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,6 +29,8 @@ public class NameBudgetFragment extends Fragment {
     Context mContext;
     EditText nameField;
     AddBudgetSwipeView obj = new AddBudgetSwipeView();
+    Button nextButton;
+    long mLastClickTime = 0;
 
 
 
@@ -39,7 +42,7 @@ public class NameBudgetFragment extends Fragment {
         final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.name_budget_fragment_layout, container, false);
 
 
-        Button nextButton = (Button)rootView.findViewById(R.id.nameBudgetFragmentNext);
+        nextButton = (Button)rootView.findViewById(R.id.nameBudgetFragmentNext);
         nameField = (EditText)rootView.findViewById(R.id.nameBudgetFragmentNameField);
 
 
@@ -52,6 +55,15 @@ public class NameBudgetFragment extends Fragment {
             public void onClick(View v) {
 
 
+
+
+                long currentTime = System.currentTimeMillis();
+
+
+                nextButton.setEnabled(false);
+                // mis-clicking prevention, using threshold of 1000 ms
+                while (currentTime + 150 > System.currentTimeMillis()){}
+                mLastClickTime = SystemClock.elapsedRealtime();
                 AsyncNextPage task = new AsyncNextPage();
                 task.execute(nameField.getText().toString());
 
@@ -116,6 +128,7 @@ public class NameBudgetFragment extends Fragment {
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 nameField.setEnabled(true);
+                                nextButton.setEnabled(true);
                             }
                         })
                         .show();
@@ -136,8 +149,10 @@ public class NameBudgetFragment extends Fragment {
 
 
 
+
         Log.d("nameBudgetFrag", "before moving to next page, budget name is " + obj.getBudgetName());
         AddBudgetSwipeView.mPager.setCurrentItem(1);
+        nextButton.setEnabled(true);
 
 
     }

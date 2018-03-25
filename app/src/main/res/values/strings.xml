@@ -40,6 +40,7 @@
     <string name="categories_to_add">Categories to add:</string>
     <string name="total_expenses">Total Projected Expenses:</string>
     <string name="projected_expense">Projected Expense:\u0020</string>
+    <string name="select_type_text">Use your spending from a previous budget as a template, or start from scratch</string>
 
 
 </resources>
