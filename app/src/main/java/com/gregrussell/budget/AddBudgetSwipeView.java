@@ -45,6 +45,7 @@ public class AddBudgetSwipeView extends Activity {
     private static List<CategoryObj> unusedCategoriesList;
     private static String budgetName;
     private static ListDataObj usedCategoryListData;
+    private static List<CategoryObj> usedCategoryObjList;
 
     public ListDataObj getUsedCategoryListData(){
         return this.usedCategoryListData;
@@ -73,6 +74,13 @@ public class AddBudgetSwipeView extends Activity {
     }
     public void setUnusedCategoriesList(List<CategoryObj> unusedCategoriesList){
         this.unusedCategoriesList = unusedCategoriesList;
+    }
+
+    public List<CategoryObj> getUsedCategoryObjList(){
+        return this.usedCategoryObjList;
+    }
+    public void setUsedCategoryObjList(List<CategoryObj> usedCategoryObjList){
+        this.usedCategoryObjList = usedCategoryObjList;
     }
 
 

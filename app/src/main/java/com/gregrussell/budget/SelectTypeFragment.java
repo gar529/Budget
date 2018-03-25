@@ -18,6 +18,7 @@ import android.widget.ListView;
 
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -259,6 +260,12 @@ public class SelectTypeFragment extends Fragment {
             }
 
             addBudgetObject.setUnusedCategoriesList(myDBHelper.getUnusedCategories(budgetID));
+            listData.getCategoryIDList().remove(0);
+            listData.getCategoryList().remove(0);
+            listData.getExpenseList().remove(0);
+            listData.getSpentList().remove(0);
+            addBudgetObject.setUsedCategoryListData(listData);
+            addBudgetObject.setUsedCategoryObjList(getUsedCategoryObjectList(addBudgetObject.getUsedCategoryListData()));
 
             return null;
         }
@@ -269,7 +276,7 @@ public class SelectTypeFragment extends Fragment {
             LayoutInflater inflater = getActivity().getLayoutInflater();
             ViewGroup view = (ViewGroup)inflater.inflate(R.layout.add_budget_fragment_layout,null);
             //ListView list = (ListView)view.findViewById(R.id.addBudgetFragmentListView);
-            ListViewAdapterAddBudgetFragment adapter = new ListViewAdapterAddBudgetFragment(mContext, listData);
+            ListViewAdapterAddBudgetFragment adapter = new ListViewAdapterAddBudgetFragment(mContext, addBudgetObject.getUsedCategoryListData());
             AddBudgetFragment.categoryList.setAdapter(null);
             AddBudgetFragment.categoryList.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -303,6 +310,8 @@ public class SelectTypeFragment extends Fragment {
             }
 
 
+            addBudgetObject.setUnusedCategoriesList(myDBHelper.getOtherCategories());
+            addBudgetObject.setUsedCategoryObjList(myDBHelper.getDefaultCategories());
             addBudgetObject.setUsedCategoryListData(myDBHelper.getDefaultCategoriesAsListData());
 
             return null;
@@ -326,6 +335,24 @@ public class SelectTypeFragment extends Fragment {
             AddBudgetFragment.expensesAmount.setText(fmt.format(addBudgetObject.getUsedCategoryListData().getTotalSpent()));
             AddBudgetSwipeView.mPager.setCurrentItem(2);
         }
+
+    }
+
+    private List<CategoryObj> getUsedCategoryObjectList(ListDataObj listData){
+
+        List<CategoryObj> usedCategoryObjectList = new ArrayList<CategoryObj>();
+        for(int i =0; i< listData.getCategoryList().size(); i++){
+
+            CategoryObj category = new CategoryObj();
+            category.setID(listData.getCategoryIDList().get(i));
+            category.setCategoryName(listData.getCategoryList().get(i));
+            usedCategoryObjectList.add(category);
+
+            Log.d("selectTypeFragment", "category list; ID = " + category.getID() + " name = " + category.getCategoryName() + " default = " + category.getDefaultCategory());
+        }
+
+        return usedCategoryObjectList;
+
 
     }
 
